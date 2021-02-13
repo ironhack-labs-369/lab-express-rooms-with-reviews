@@ -74,7 +74,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_KEY,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: 'http://localhost:3000/auth/google/callback',
+            callbackURL: '/auth/google/callback',
         },
         (accessToken, refreshToken, profile, done) => {
             // to see the structure of the data in received response:
@@ -118,6 +118,9 @@ app.use('/', index);
 
 const auth = require('./routes/auth');
 app.use('/', auth);
+
+const rooms = require('./routes/rooms');
+app.use('/', rooms);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);

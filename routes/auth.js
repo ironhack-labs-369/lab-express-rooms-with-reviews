@@ -3,8 +3,9 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-// google login
-
+// @desc      Google social login
+// @route     GET /auth/google
+// @access    Public
 router.get(
     '/auth/google',
     passport.authenticate('google', {
@@ -22,16 +23,23 @@ router.get(
     })
 );
 
-// signup
+/// @desc     Sign up
+// @route     GET /signup
+// @access    Public
 router.get('/signup', (req, res, next) => {
     res.render('auth/signup');
 });
 
-// login
-router.get('/login', (req, res, next) => {
+// @desc      Log in
+// @route     GET /login
+// @access    Public
+router.get('/login', async (req, res, next) => {
     res.render('auth/login');
 });
 
+// @desc      Log in
+// @route     POST /login
+// @access    Public
 router.post(
     '/login',
     passport.authenticate('local', {
@@ -41,6 +49,9 @@ router.post(
     })
 );
 
+// @desc      Log in
+// @route     POST /signup
+// @access    Public
 router.post('/signup', (req, res, next) => {
     const { username, password } = req.body;
     if (password.length < 8) {
@@ -81,4 +92,11 @@ router.post('/signup', (req, res, next) => {
     });
 });
 
+// @desc      Log out
+// @route     GET /logout
+// @access    Private
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+});
 module.exports = router;

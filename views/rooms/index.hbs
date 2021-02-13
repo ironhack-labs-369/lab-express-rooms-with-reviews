@@ -1,0 +1,17 @@
+
+{{#each rooms}}
+    <div class="result-card">
+     <h3><a href="/rooms/{{_id}}">Room {{name}}</a></h3>
+     <img src="{{imageUrl}}" alt="{{name}}">
+     <p>Description:  {{description}}</p>
+     <p>Reviews:  {{reviews}}</p>
+     <form action="/rooms/{{_id}}/delete" method="POST">
+      <button type="submit" id="delete-btn">Delete</button>
+     </form>
+    </div>
+
+
+ 
+{{/each}}
+
+     <h4><a href="/rooms/add" id="add-btn">Add room</a></h4>

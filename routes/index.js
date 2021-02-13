@@ -1,13 +1,12 @@
 const router = require('express').Router();
-const loginCheck = require('../middleware/middleware');
+const User = require('../models/User');
 
-/* GET home page */
+// @desc      Home page
+// @route     GET /
+// @access    Public
 router.get('/', (req, res, next) => {
-    console.log('user', req.user); /// is undefined
+    console.log('user', req.user);
     res.render('index', { user: req.user });
-});
-router.get('/rooms', loginCheck, (req, res, next) => {
-    res.render('rooms/index');
 });
 
 module.exports = router;

@@ -1,11 +1,13 @@
 <h1>Rooms App with Reviews</h1>
 
-<h1>Hello {{#if user}} {{user.name}} {{/if}} </h1>
+<h1>Hello {{#if user}} {{user.username}} {{/if}} </h1>
 
 {{#if user}}
-<a href="/profile">Profile</a>
+<a href="/private">Private</a>
 <a href="/logout">Logout</a>
 {{else}}
 <a href="/signup">Sign Up</a>
 <a href="/login">Log In</a>
 {{/if}}
+
+<a href="/rooms">Show rooms</a>

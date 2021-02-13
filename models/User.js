@@ -5,6 +5,11 @@ const userSchema = new Schema(
         email: String,
         password: String,
         username: String,
+        role: {
+            type: String,
+            enum: ['user', 'admin'],
+            default: 'user',
+        },
 
         // google login - optional
         googleID: String,
