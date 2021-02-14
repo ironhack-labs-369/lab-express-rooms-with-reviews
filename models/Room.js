@@ -4,7 +4,7 @@ const roomSchema = new Schema({
     name: String,
     description: String,
     imageUrl: String,
-    // owner: { type: Schema.Types.ObjectId, ref: 'User' },
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     publicId: String,
 });

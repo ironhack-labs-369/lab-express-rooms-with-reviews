@@ -20,7 +20,7 @@ require('./config')(app);
 
 // session configuration
 const session = require('express-session');
-// session store using mongo
+// // session store using mongo
 const MongoStore = require('connect-mongo')(session);
 
 const mongoose = require('./db/index');
