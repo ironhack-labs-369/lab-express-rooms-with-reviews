@@ -15,12 +15,20 @@ router.get(
         ],
     })
 );
+// router.get(
+//     '/auth/google/callback',
+//     passport.authenticate('google', {
+//         successRedirect: '/',
+//         failureRedirect: '/login',
+//     })
+// );
 router.get(
     '/auth/google/callback',
-    passport.authenticate('google', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-    })
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('/');
+    }
 );
 
 /// @desc     Sign up
@@ -33,7 +41,7 @@ router.get('/signup', (req, res, next) => {
 // @desc      Log in
 // @route     GET /login
 // @access    Public
-router.get('/login', async (req, res, next) => {
+router.get('/login', (req, res, next) => {
     res.render('auth/login');
 });
 
@@ -56,7 +64,7 @@ router.post('/signup', (req, res, next) => {
     const { username, password } = req.body;
     if (password.length < 8) {
         res.render('auth/signup', {
-            message: 'Your password must be 8 characters minimun.',
+            message: 'Your password must be 8 characters minimum.',
         });
         return;
     }
@@ -64,7 +72,7 @@ router.post('/signup', (req, res, next) => {
         res.render('auth/signup', { message: 'Your username cannot be empty' });
         return;
     }
-    User.findOne({ username: username }).then((found) => {
+    User.findOne({ username }).then((found) => {
         if (found !== null) {
             res.render('auth/signup', {
                 message: 'This username is already taken',

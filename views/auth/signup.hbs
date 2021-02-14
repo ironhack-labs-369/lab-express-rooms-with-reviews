@@ -5,7 +5,13 @@
   <label for="">Password</label>
   <input type="password" name="password">
   <button type="submit">Sign Up</button>
+
+    {{#if message}}
+      <p style='color: red'>{{message}}</p>
+    {{/if}}
+
+  <p class="account-message">
+  Do you already have an account?
+  <a href="/login">Login</a>
+ </p>
 </form>
-{{#if message}}
-  <p style='color: red'>{{message}}</p>
-{{/if}}

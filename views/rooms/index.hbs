@@ -4,7 +4,7 @@
      <h3><a href="/rooms/{{_id}}">Room {{name}}</a></h3>
      <img src="{{imageUrl}}" alt="{{name}}">
      <p>Description:  {{description}}</p>
-     <p>Reviews:  {{reviews}}</p>
+     <p>Reviews:  {{reviews.comment}}</p>
      <form action="/rooms/{{_id}}/delete" method="POST">
       <button type="submit" id="delete-btn">Delete</button>
      </form>

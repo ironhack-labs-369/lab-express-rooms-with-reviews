@@ -18,6 +18,32 @@ const app = express();
 // ℹ️ This function is getting exported from the config folder. It runs most middlewares
 require('./config')(app);
 
+// session configuration
+const session = require('express-session');
+// session store using mongo
+const MongoStore = require('connect-mongo')(session);
+
+const mongoose = require('./db/index');
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        cookie: {
+            samesite: 'none',
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+        saveUninitialized: false,
+        //Forces the session to be saved back to the session store,
+        // even if the session was never modified during the request.
+        resave: true,
+        store: new MongoStore({
+            mongooseConnection: mongoose.connection,
+        }),
+    })
+);
+// end of session configuration
+
 // passport configuration
 const User = require('./models/User');
 const passport = require('passport');
@@ -45,7 +71,7 @@ passport.use(
         // login
         User.findOne({ username: username })
             .then((userFromDB) => {
-                if (userFromDB === null) {
+                if (!userFromDB) {
                     // there is no user with this username
                     done(null, false, { message: 'Wrong Credentials' });
                 } else if (!bcrypt.compareSync(password, userFromDB.password)) {
@@ -74,10 +100,9 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_KEY,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: '/auth/google/callback',
+            callbackURL: 'http://127.0.0.1:3000/auth/google/callback',
         },
         (accessToken, refreshToken, profile, done) => {
-            // to see the structure of the data in received response:
             console.log('Google account details:', profile);
 
             User.findOne({ googleID: profile.id })
@@ -92,7 +117,6 @@ passport.use(
                         username: profile._json.name,
                         email: profile._json.email,
                         picture: profile._json.picture,
-                        // password: req.params.password,
                     })
                         .then((newUser) => {
                             done(null, newUser);
@@ -105,6 +129,7 @@ passport.use(
 );
 
 // end passport
+
 // default value for title local
 const projectName = 'lab-express-rooms-with-reviews';
 const capitalized = (string) =>

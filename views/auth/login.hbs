@@ -5,11 +5,11 @@
     <input type="text" name="username" required>
     <label for="username">Password</label>
     <input type="password" name="password" required>
+
+    {{#if message}}
+      <p style='color: red'>{{message}}</p>
+    {{/if}}
+
     <button type="submit">Log In</button>
+    <a href="/auth/google">Log in with Google</a>
 </form>
-
-<a href="/auth/google">Log in with Google</a>
-
-{{#if message}}
-  <p style='color: red'>{{message}}</p>
-{{/if}}
