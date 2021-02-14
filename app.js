@@ -100,7 +100,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_KEY,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: 'http://127.0.0.1:3000/auth/google/callback',
+            callbackURL: '/auth/google/callback',
         },
         (accessToken, refreshToken, profile, done) => {
             console.log('Google account details:', profile);
@@ -146,6 +146,23 @@ app.use('/', auth);
 
 const rooms = require('./routes/rooms');
 app.use('/', rooms);
+
+hbs.registerHelper('selector', function (room) {
+    // const selected = movie.cast.map(actor => actor._id).includes(this._id) ? 'selected' : '';
+    let selected = '';
+    if (room.owner.map((user) => user._id).includes(this._id)) {
+        selected = 'selected';
+    }
+    return (
+        '<option value="' +
+        this._id +
+        '" ' +
+        selected +
+        '>' +
+        this.name +
+        '</option>'
+    );
+});
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);

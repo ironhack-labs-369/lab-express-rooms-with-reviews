@@ -49,7 +49,7 @@ router.post(
             name,
             description,
             imageUrl,
-            // owner: req.user.id,
+            owner: req.user.id,
             reviews,
             publicId,
         })
@@ -63,48 +63,84 @@ router.post(
 );
 
 // @desc      Show edit form
-// @route     POST /rooms/edit/:id
+// @route     POST /rooms/:id/edit
 // @access    Private
-router.get('/rooms/edit/:id', loginCheck, (req, res) => {
+router.get('/rooms/:id/edit', (req, res) => {
     User.find()
         .populate('owner')
         .then((owners) => {
-            Room.findById(req.params.id).then((room) => {
-                console.log('room', room);
-                res.render('roomEdit', { room, owners });
-            });
+            Room.findById(req.params.id)
+                .then((room) => {
+                    console.log('room', room);
+                    let options = '';
+                    let selected = '';
+                    owners.forEach((owner) => {
+                        console.log('owner', owner);
+                        selected = room.owner
+                            .map((el) => el._id)
+                            .includes(owner._id)
+                            ? ' selected'
+                            : '';
+                        options += `<option value="${owner._id}" ${selected}>${owner.name}</option>`;
+                    });
+                    console.log('owners', owners);
+                    res.render('rooms/edit', { room, options });
+                    // res.render('rooms/edit', { room, owners });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    next(err);
+                });
         });
 });
-module.exports = router;
 
-// @desc      Delete room
-// @route     GET /rooms/delete/:id
-// @access    Private
-router.get('/rooms/delete/:id', loginCheck, (req, res) => {
-    Book.findByIdAndDelete(req.params.id).then((room) => {
-        console.log('This room was removed', room);
-        res.redirect('/rooms').catch((err) => {
-            console.log(err);
-        });
-    });
-});
 // @desc      Edit room
-// @route     POST /rooms/edit/:id
+// @route     POST /rooms/:id/edit
 // @access    Private
-router.post('/books/edit/:id', loginCheck, (req, res) => {
+router.post('/rooms/:id/edit', loginCheck, (req, res) => {
     const { name, description, price } = req.body;
-    Book.findbyIdAndUpdate(req.params.id, {
+    const query = { _id: req.params.id };
+
+    // if user is not admin they have to be the owner
+    if (req.user.role !== 'admin') {
+        query.owner = req.user._id;
+    }
+    console.log('query', query);
+    Room.findbyIdAndUpdate(query, {
         title,
         description,
         price,
     })
         .then((room) => {
             console.log('This room was updated', room);
-            res.redirect(`/rooms/${room._id}`);
+            res.redirect(`/rooms`);
         })
         .catch((err) => {
             console.log(err);
         });
+});
+
+// @desc      Delete room
+// @route     POST /rooms/:id/delete
+// @access    Private
+router.post('/rooms/:id/delete', (req, res) => {
+    console.log('req.params', req.params);
+    const query = { _id: req.params.id };
+
+    // if user is not admin they have to be the owner
+    if (req.user.role !== 'admin') {
+        query.owner = req.user._id;
+    }
+    console.log('query', query);
+    Room.findByIdAndDelete(query).then((room) => {
+        if (room.imageUrl) {
+            cloudinary.uploader.destroy(room.publicId);
+        }
+        console.log('This room was removed', room);
+        res.redirect('/rooms').catch((err) => {
+            console.log(err);
+        });
+    });
 });
 
 // @desc      Write review
@@ -125,3 +161,5 @@ router.post('/rooms/:id/reviews', (req, res) => {
             console.log(err);
         });
 });
+
+module.exports = router;

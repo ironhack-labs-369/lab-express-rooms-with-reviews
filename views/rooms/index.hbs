@@ -1,13 +1,53 @@
 
 {{#each rooms}}
     <div class="result-card">
-     <h3><a href="/rooms/{{_id}}">Room {{name}}</a></h3>
-     <img src="{{imageUrl}}" alt="{{name}}">
-     <p>Description:  {{description}}</p>
-     <p>Reviews:  {{reviews.comment}}</p>
-     <form action="/rooms/{{_id}}/delete" method="POST">
-      <button type="submit" id="delete-btn">Delete</button>
-     </form>
+
+            <h3><a href="/rooms/{{_id}}">Room {{name}}</a></h3>
+            <div class="inner-card">
+                <img src="{{imageUrl}}" alt="{{name}}">
+                <div id="infos">
+
+                    <p>Description:<br>{{description}}</p>
+                    <p>Reviews:</p>
+                        {{#if rooms.reviews}}
+                            {{#each rooms.reviews}}
+                                <div>
+                                    <p>{{this.comments}}</p>
+                                    <span>{{this.user}}</span>
+                                </div>
+                            {{/each}}
+                        {{/if}}
+
+                </div>
+          
+            </div>
+            <div id="add-review">
+
+                <p>Add a review</p>
+                <form action="/rooms/{{_id}}/reviews" method="POST">
+                        <div class="review-input">
+                             <label for="">User: &nbsp; </label>
+                            <input type="text" name="user"><br>
+                        </div>
+                        <div class="review-input">
+                            <label for="">Comments: &nbsp; </label>
+                            <input type="text" name="comments"><br>
+                        </div>
+                       
+                        
+                        <button type="submit">Add</button>
+                </form>
+            </div>
+            <div class="buttons">
+                <a href="/rooms/{{_id}}/edit">Edit</a>
+
+            <form action="/rooms/{{_id}}/delete" method="POST">
+            <button type="submit" id="delete-btn">Delete</button>
+            </form>
+            </div>
+            
+    
+
     </div>
 
 
