@@ -9,15 +9,18 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 // @route     GET /rooms
 // @access    Public
 router.get('/rooms', (req, res, next) => {
-    Room.find()
+    User.find()
         .populate('owner')
-        .then((rooms) => {
-            console.log('rooms', rooms);
-            res.render('rooms/index', { rooms });
-        })
-        .catch((err) => {
-            console.log(err);
-            next(err);
+        .then((owners) => {
+            Room.find()
+                .then((rooms) => {
+                    console.log('rooms', rooms);
+                    res.render('rooms/index', { rooms, owners });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    next(err);
+                });
         });
 });
 
@@ -29,6 +32,22 @@ router.get('/rooms/add', (req, res) => {
         .populate('owner')
         .then((owners) => {
             res.render('rooms/add', { owners });
+        });
+});
+
+// @desc      Write review
+// @route     POST /rooms/:id/reviews
+// @access    Private
+router.post('/rooms/:id/reviews', (req, res) => {
+    const { comment } = req.body;
+    Room.findOneAndUpdate(req.params.id, {
+        $push: { reviews: { user: req.user.username, comment } },
+    })
+        .then(() => {
+            res.redirect(`/rooms`);
+        })
+        .catch((err) => {
+            console.log(err);
         });
 });
 
@@ -141,25 +160,6 @@ router.post('/rooms/:id/delete', (req, res) => {
             console.log(err);
         });
     });
-});
-
-// @desc      Write review
-// @route     POST /rooms/:id/reviews
-// @access    Private
-router.post('/rooms/:id/reviews', (req, res) => {
-    const { user, comments } = req.body;
-    Book.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-            $push: { reviews: { user, comments } },
-        }
-    )
-        .then(() => {
-            res.redirect(`/rooms`);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
 });
 
 module.exports = router;

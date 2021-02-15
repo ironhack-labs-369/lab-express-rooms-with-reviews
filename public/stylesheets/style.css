@@ -103,12 +103,15 @@ button {
 #add-review {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     width: 100%;
     margin-top: 5%;
 }
 #add-review form {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .review-input {
     display: flex;
@@ -119,12 +122,16 @@ button {
 .review-input input {
     width: 70%;
     margin-top: 5%;
+    line-height: 2rem;
 }
 .buttons {
     display: flex;
     width: 100%;
     justify-content: flex-end;
     align-items: center;
+}
+.buttons img {
+    width: 3rem;
 }
 ul > li {
     list-style-type: none;
